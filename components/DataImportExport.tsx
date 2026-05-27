@@ -27,11 +27,24 @@ export default function DataImportExport() {
       try {
         const { createClient } = await import("@/utils/supabase/client");
         const supabase = createClient();
-        const { data } = await supabase
-          .from("persons")
-          .select("id, full_name, birth_year, gender, avatar_url, generation")
-          .order("birth_year", { ascending: true, nullsFirst: false });
-        if (data) setPersons(data as Person[]);
+        
+        let allFetched: Person[] = [];
+        let from = 0;
+        const step = 1000;
+        
+        while (true) {
+          const { data } = await supabase
+            .from("persons")
+            .select("id, full_name, birth_year, gender, avatar_url, generation")
+            .order("birth_year", { ascending: true, nullsFirst: false })
+            .range(from, from + step - 1);
+            
+          if (!data || data.length === 0) break;
+          allFetched = allFetched.concat(data as Person[]);
+          if (data.length < step) break;
+          from += step;
+        }
+        setPersons(allFetched);
       } catch (err) {
         console.error("Error fetching persons:", err);
       }
