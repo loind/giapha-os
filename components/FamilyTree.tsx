@@ -247,7 +247,7 @@ export default function FamilyTree({
                 </div>
               ))}
 
-            {/* Expand/Collapse Toggle – centered on the row */}
+            {/* Expand/Collapse Toggle – centered on the row, larger for better UX */}
             {!hideExpandButtons && hasChildren && (
               <div
                 role="button"
@@ -264,13 +264,13 @@ export default function FamilyTree({
                     toggleCollapse(personId);
                   }
                 }}
-                className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white border border-stone-200/80 rounded-full size-6 flex items-center justify-center shadow-md z-100 text-stone-500 hover:text-amber-600 hover:border-amber-300 transition-colors cursor-pointer"
-                title={isCollapsed ? "Mở rộng" : "Thu gọn"}
+                className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white border-2 border-stone-200/80 rounded-full size-8 flex items-center justify-center shadow-lg z-100 text-stone-500 hover:text-amber-600 hover:border-amber-400 hover:shadow-amber-200/50 transition-all cursor-pointer active:scale-95 min-w-[32px] min-h-[32px]"
+                title={isCollapsed ? "Mở rộng nhánh" : "Thu gọn nhánh"}
               >
                 {isCollapsed ? (
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-4 h-4" />
                 ) : (
-                  <Minus className="w-3.5 h-3.5" />
+                  <Minus className="w-4 h-4" />
                 )}
               </div>
             )}

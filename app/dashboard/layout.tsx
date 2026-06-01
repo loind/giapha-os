@@ -8,11 +8,15 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
+interface DashboardLayoutProps {
+  children: React.ReactNode;
+  // Allow child pages to pass breadcrumbs
+  params?: Promise<{ breadcrumbs?: Array<{ label: string; href?: string }> }>;
+}
+
 export default async function DashboardLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: DashboardLayoutProps) {
   const user = await getUser();
 
   if (!user) {

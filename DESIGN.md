@@ -102,6 +102,12 @@ components:
     backgroundColor: "rgba(255, 255, 255, 0.7)"
     rounded: "{rounded.3xl}"
     padding: 32px
+navigation:
+  header-height: 64px
+  mobile-breakpoint: 1024px
+  breadcrumb-height: 40px
+  toolbar-height: 48px
+  touch-target-min: 44px
 ---
 
 # GiaPha-OS Design System
@@ -190,3 +196,93 @@ Style patterns for primary component atoms:
 - **Don't** use sterile pure black backgrounds or pure gray shadows; always keep shadow values extremely soft and transparent.
 - **Do** verify contrast ratios between the golden amber actions and their backgrounds.
 - **Don't** mix square/sharp corners with organic card shapes. All main content cards should utilize uniform `rounded-3xl` styles.
+
+---
+
+## Navigation Patterns
+
+### Top Navigation Bar
+- Fixed header at top with `sticky` positioning
+- Height: 64px on desktop, responsive to mobile
+- Contains: Logo, main navigation links, user menu
+- Background: `bg-surface/80` with `backdrop-blur-xl`
+- Border: `border-b border-border` with `shadow-soft`
+
+### Main Navigation Items
+- Trang chủ (Home)
+- Cây gia phả (Family Tree)
+- Sự kiện (Events)
+- Thống kê (Statistics)
+- Phòng trưng bày (Gallery)
+
+### Breadcrumbs
+- Located below the main header
+- Shows current location in the app hierarchy
+- Home icon links to dashboard
+- Chevron separators between items
+- Current page shown without link, bold text
+
+### Mobile Navigation
+- Hamburger menu button appears on screens < 1024px
+- Menu slides down when activated
+- Full-height overlay with navigation links
+- Close button (X) to dismiss
+
+### Touch Targets
+- Minimum size: 44px × 44px for all interactive elements
+- Expand/collapse buttons on family tree: 32px minimum
+- This ensures good usability on mobile devices
+
+---
+
+## Form Patterns
+
+### Date Input Groups
+- Use `/` separators between day/month/year inputs
+- Center-aligned text within inputs
+- Compact sizing: `w-14` to `w-20` per field
+- Placeholder text: short abbreviations (Ng, Th, Nm)
+
+### Section Headers
+- Icon in a colored badge (e.g., `bg-amber-50`)
+- Section title in serif font
+- Optional subtitle with required field indicator
+- Bottom border to separate from content
+
+### Required Fields
+- Marked with red asterisk `*`
+- Located immediately after field label
+
+### Active Filter Indicators
+- Chips/tags showing active filters
+- Color-coded: amber for search, blue for filter options
+- X button to clear individual filters
+- "Xóa tất cả" link to clear all filters
+
+---
+
+## Component States
+
+### Buttons
+- **Default:** Solid background, visible border
+- **Hover:** Slight scale down, shadow increase, color shift
+- **Active/Pressed:** Scale to 95%, darker background
+- **Disabled:** Reduced opacity, no cursor changes
+
+### Input Fields
+- **Default:** Light background, subtle border
+- **Focus:** Amber border, ring effect, slightly lighter background
+- **Error:** Red border, error message below
+- **Disabled:** Grayed out, no interaction
+
+### Cards
+- Semi-transparent white background
+- Rounded corners (`rounded-2xl` to `rounded-3xl`)
+- Soft shadow that increases on hover
+- Subtle border that darkens on hover
+
+### Tree Node Expand/Collapse
+- Circular button below parent node
+- `+` icon when collapsed, `-` icon when expanded
+- Larger touch target (32px minimum)
+- Hover state with amber color change

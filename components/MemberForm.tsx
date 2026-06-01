@@ -441,10 +441,20 @@ export default function MemberForm({
         animate="show"
         className="bg-white/80 p-5 sm:p-8 rounded-2xl shadow-sm border border-stone-200/80"
       >
-        <h3 className="text-lg sm:text-xl font-serif font-bold text-stone-800 mb-6 border-b border-stone-100 pb-4 flex items-center gap-2">
-          <User className="size-5 text-amber-600" />
-          Thông tin chung
-        </h3>
+        {/* Section Header with Icon */}
+        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-stone-100">
+          <div className="p-2 bg-amber-50 rounded-xl border border-amber-100">
+            <User className="size-5 text-amber-600" />
+          </div>
+          <div>
+            <h3 className="text-lg sm:text-xl font-serif font-bold text-stone-800">
+              Thông tin thành viên
+            </h3>
+            <p className="text-xs text-stone-500 mt-0.5">
+              <span className="text-red-500">*</span> Thông tin bắt buộc
+            </p>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-1">
             <label className="block text-sm font-semibold text-stone-700 mb-1.5">
@@ -667,9 +677,9 @@ export default function MemberForm({
 
           <div className="md:col-span-2">
             <label className="block text-sm font-semibold text-stone-700 mb-1.5">
-              Ngày sinh dương lịch
+              Ngày sinh <span className="text-stone-400 font-normal">(Dương lịch)</span>
             </label>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="flex items-center gap-2">
               <input
                 type="number"
                 placeholder="Ngày"
@@ -679,8 +689,9 @@ export default function MemberForm({
                 onChange={(e) =>
                   setBirthDay(e.target.value ? Number(e.target.value) : "")
                 }
-                className={inputClasses}
+                className={`${inputClasses} w-20 text-center`}
               />
+              <span className="text-stone-400 font-bold">/</span>
               <input
                 type="number"
                 placeholder="Tháng"
@@ -690,8 +701,9 @@ export default function MemberForm({
                 onChange={(e) =>
                   setBirthMonth(e.target.value ? Number(e.target.value) : "")
                 }
-                className={inputClasses}
+                className={`${inputClasses} w-20 text-center`}
               />
+              <span className="text-stone-400 font-bold">/</span>
               <input
                 type="number"
                 placeholder="Năm"
@@ -699,57 +711,58 @@ export default function MemberForm({
                 onChange={(e) =>
                   setBirthYear(e.target.value ? Number(e.target.value) : "")
                 }
-                className={inputClasses}
+                className={`${inputClasses} w-28 text-center`}
               />
             </div>
+            <p className="mt-1.5 text-xs text-stone-400 flex items-center gap-1">
+              <span>💡</span> Có thể chỉ nhập năm sinh nếu không rõ ngày/tháng
+            </p>
           </div>
 
           <div className="md:col-span-2 bg-stone-50/50 p-5 rounded-2xl border border-stone-200/60 shadow-xs">
-            <div className="flex flex-col gap-4">
-              <label className="flex items-center gap-3 group">
-                <div className="relative flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={isDeceased}
-                    onChange={(e) => {
-                      setIsDeceased(e.target.checked);
-                      if (!e.target.checked) {
-                        setDeathYear("");
-                        setDeathMonth("");
-                        setDeathDay("");
-                        setDeathLunarYear("");
-                        setDeathLunarMonth("");
-                        setDeathLunarDay("");
-                      }
+            <label className="flex items-center gap-3 group cursor-pointer">
+              <div className="relative flex items-center">
+                <input
+                  type="checkbox"
+                  checked={isDeceased}
+                  onChange={(e) => {
+                    setIsDeceased(e.target.checked);
+                    if (!e.target.checked) {
+                      setDeathYear("");
+                      setDeathMonth("");
+                      setDeathDay("");
+                      setDeathLunarYear("");
+                      setDeathLunarMonth("");
+                      setDeathLunarDay("");
+                    }
+                  }}
+                  className="peer sr-only"
+                />
+                <div className="size-5 border-2 border-stone-300 rounded peer-checked:bg-stone-600 peer-checked:border-stone-600 transition-colors flex items-center justify-center">
+                  <motion.svg
+                    initial={false}
+                    animate={{
+                      opacity: isDeceased ? 1 : 0,
+                      scale: isDeceased ? 1 : 0.5,
                     }}
-                    className="peer sr-only"
-                  />
-                  <div className="size-5 border-2 border-stone-300 rounded peer-checked:bg-stone-600 peer-checked:border-stone-600 transition-colors flex items-center justify-center">
-                    <motion.svg
-                      initial={false}
-                      animate={{
-                        opacity: isDeceased ? 1 : 0,
-                        scale: isDeceased ? 1 : 0.5,
-                      }}
-                      className="size-3 text-white pointer-events-none"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={4}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </motion.svg>
-                  </div>
+                    className="size-3 text-white pointer-events-none"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={4}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </motion.svg>
                 </div>
-                <span className="text-sm font-semibold text-stone-700 group-hover:text-stone-900 transition-colors">
-                  Đã mất
-                </span>
-              </label>
-            </div>
+              </div>
+              <span className="text-sm font-semibold text-stone-700 group-hover:text-stone-900 transition-colors">
+                Đã mất
+              </span>
+            </label>
 
             <AnimatePresence>
               {isDeceased && (
@@ -759,40 +772,41 @@ export default function MemberForm({
                   exit={{ opacity: 0, height: 0, marginTop: 0 }}
                   className="overflow-hidden"
                 >
-                  <p className="text-[13px] text-stone-500 mb-4 italic">
-                    * Nhập Ngày Dương lịch hoặc Ngày Âm lịch. Hệ thống sẽ tự
-                    động tính toán và điền phần còn lại.
+                  <p className="text-[11px] text-stone-500 mb-4 italic">
+                    * Nhập một trong hai loại lịch, hệ thống sẽ tự động tính toán phần còn lại.
                   </p>
 
-                  <div className="flex flex-col gap-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Lunar Date */}
-                    <div>
-                      <label className="block text-sm font-semibold text-stone-700 mb-2">
-                        Ngày mất (Âm lịch)
+                    <div className="bg-white/60 p-3 rounded-xl border border-stone-200/50">
+                      <label className="block text-xs font-semibold text-stone-600 mb-2">
+                        Ngày mất <span className="text-amber-600 font-bold">Âm lịch</span>
                       </label>
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="flex items-center gap-1.5">
                         <input
                           type="number"
-                          placeholder="Ngày"
+                          placeholder="Ng"
                           min="1"
                           max="31"
                           value={deathLunarDay}
                           onChange={(e) =>
                             handleLunarDeathChange("day", e.target.value)
                           }
-                          className={inputClasses}
+                          className={`${inputClasses} w-14 text-center text-sm py-2`}
                         />
+                        <span className="text-stone-400 font-bold">/</span>
                         <input
                           type="number"
-                          placeholder="Tháng"
+                          placeholder="Th"
                           min="1"
                           max="12"
                           value={deathLunarMonth}
                           onChange={(e) =>
                             handleLunarDeathChange("month", e.target.value)
                           }
-                          className={inputClasses}
+                          className={`${inputClasses} w-14 text-center text-sm py-2`}
                         />
+                        <span className="text-stone-400 font-bold">/</span>
                         <input
                           type="number"
                           placeholder="Năm"
@@ -800,39 +814,41 @@ export default function MemberForm({
                           onChange={(e) =>
                             handleLunarDeathChange("year", e.target.value)
                           }
-                          className={inputClasses}
+                          className={`${inputClasses} w-20 text-center text-sm py-2`}
                         />
                       </div>
                     </div>
 
                     {/* Solar Date */}
-                    <div>
-                      <label className="block text-sm font-semibold text-stone-700 mb-2">
-                        Ngày mất (Dương lịch)
+                    <div className="bg-white/60 p-3 rounded-xl border border-stone-200/50">
+                      <label className="block text-xs font-semibold text-stone-600 mb-2">
+                        Ngày mất <span className="text-sky-600 font-bold">Dương lịch</span>
                       </label>
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="flex items-center gap-1.5">
                         <input
                           type="number"
-                          placeholder="Ngày"
+                          placeholder="Ng"
                           min="1"
                           max="31"
                           value={deathDay}
                           onChange={(e) =>
                             handleSolarDeathChange("day", e.target.value)
                           }
-                          className={inputClasses}
+                          className={`${inputClasses} w-14 text-center text-sm py-2`}
                         />
+                        <span className="text-stone-400 font-bold">/</span>
                         <input
                           type="number"
-                          placeholder="Tháng"
+                          placeholder="Th"
                           min="1"
                           max="12"
                           value={deathMonth}
                           onChange={(e) =>
                             handleSolarDeathChange("month", e.target.value)
                           }
-                          className={inputClasses}
+                          className={`${inputClasses} w-14 text-center text-sm py-2`}
                         />
+                        <span className="text-stone-400 font-bold">/</span>
                         <input
                           type="number"
                           placeholder="Năm"
@@ -840,7 +856,7 @@ export default function MemberForm({
                           onChange={(e) =>
                             handleSolarDeathChange("year", e.target.value)
                           }
-                          className={inputClasses}
+                          className={`${inputClasses} w-20 text-center text-sm py-2`}
                         />
                       </div>
                     </div>

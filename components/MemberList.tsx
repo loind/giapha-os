@@ -2,7 +2,7 @@
 
 import PersonCard from "@/components/PersonCard";
 import { Person, Relationship } from "@/types";
-import { ArrowUpDown, Filter, Plus, Search } from "lucide-react";
+import { ArrowUpDown, Filter, Plus, Search, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useMemberListView } from "@/context/MemberListContext";
 
@@ -267,19 +267,47 @@ export default function MemberList({
   return (
     <>
       <div className="mb-8 relative">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/60 backdrop-blur-xl p-4 sm:p-5 rounded-2xl shadow-sm border border-stone-200/60 transition-all duration-300 relative z-10 w-full">
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto flex-1">
-            <div className="relative flex-1 max-w-sm group">
+        {/* Top bar with Add Member button and Search/Filter */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4">
+          {/* Add Member Button - Prominent Position */}
+          {canEdit && (
+            <button
+              onClick={() => setShowCreateMember(true)}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 w-full lg:w-auto"
+            >
+              <Plus className="size-5" strokeWidth={2.5} />
+              <span>Thêm thành viên</span>
+              <span className="hidden sm:inline text-xs font-normal opacity-75 ml-1">(Ctrl+N)</span>
+            </button>
+          )}
+        </div>
+
+        {/* Search and Filter Bar */}
+        <div className="bg-white/60 backdrop-blur-xl p-4 sm:p-5 rounded-2xl shadow-sm border border-stone-200/60 transition-all duration-300 relative z-10">
+          <div className="flex flex-col sm:flex-row gap-4 w-full">
+            {/* Search Input */}
+            <div className="relative flex-1 group">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-stone-400 group-focus-within:text-amber-500 transition-colors" />
               <input
                 type="text"
-                placeholder="Tìm kiếm thành viên..."
-                className="bg-white/90 text-stone-900 w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-200/80 shadow-sm placeholder-stone-400 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 transition-all"
+                placeholder="Tìm kiếm theo tên..."
+                className="bg-white/90 text-stone-900 w-full pl-10 pr-10 py-2.5 rounded-xl border border-stone-200/80 shadow-sm placeholder-stone-400 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-500/20 transition-all"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-stone-400 hover:text-stone-600 transition-colors"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
             </div>
+
+            {/* Filter Controls */}
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto items-center">
+              {/* Filter Dropdown */}
               <div className="relative w-full sm:w-auto">
                 <Filter className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-stone-400 pointer-events-none" />
                 <select
@@ -312,6 +340,7 @@ export default function MemberList({
                 </div>
               </div>
 
+              {/* Sort Dropdown */}
               <div className="relative w-full sm:w-auto">
                 <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-stone-400 pointer-events-none" />
                 <select
@@ -348,14 +377,39 @@ export default function MemberList({
               </div>
             </div>
           </div>
-          {canEdit && (
-            <button
-              onClick={() => setShowCreateMember(true)}
-              className="btn-primary"
-            >
-              <Plus className="size-4" strokeWidth={2.5} />
-              Thêm thành viên
-            </button>
+
+          {/* Active filters indicator */}
+          {(searchTerm || filterOption !== "all") && (
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-stone-100">
+              <span className="text-xs text-stone-500">Đang lọc:</span>
+              {searchTerm && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 text-xs font-medium rounded-full border border-amber-200">
+                  Tìm: "{searchTerm}"
+                  <button onClick={() => setSearchTerm("")} className="hover:text-amber-900">
+                    <X className="size-3" />
+                  </button>
+                </span>
+              )}
+              {filterOption !== "all" && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full border border-blue-200">
+                  {filterOption === "male" ? "Nam" :
+                   filterOption === "female" ? "Nữ" :
+                   filterOption === "in_law_female" ? "Dâu" :
+                   filterOption === "in_law_male" ? "Rể" :
+                   filterOption === "deceased" ? "Đã mất" :
+                   filterOption === "first_child" ? "Con trưởng" : filterOption}
+                  <button onClick={() => setFilterOption("all")} className="hover:text-blue-900">
+                    <X className="size-3" />
+                  </button>
+                </span>
+              )}
+              <button
+                onClick={() => { setSearchTerm(""); setFilterOption("all"); }}
+                className="text-xs text-stone-500 hover:text-amber-600 transition-colors ml-auto"
+              >
+                Xóa tất cả
+              </button>
+            </div>
           )}
         </div>
       </div>
