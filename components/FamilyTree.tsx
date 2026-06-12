@@ -229,7 +229,7 @@ export default function FamilyTree({
         >
           {/* Main Person & Spouses Row */}
           <div
-            className={`flex relative z-10 items-stretch h-full${showAvatar ? " bg-white rounded-2xl shadow-md border border-stone-200/80 transition-opacity" : ""}`}
+            className={`flex relative z-10 items-stretch h-full${showAvatar ? " bg-surface rounded-2xl shadow-md border border-border/80 transition-opacity" : ""}`}
           >
             <FamilyNodeCard person={data.person} level={level} />
 
@@ -264,7 +264,7 @@ export default function FamilyTree({
                     toggleCollapse(personId);
                   }
                 }}
-                className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white border-2 border-stone-200/80 rounded-full size-8 flex items-center justify-center shadow-lg z-100 text-stone-500 hover:text-amber-600 hover:border-amber-400 hover:shadow-amber-200/50 transition-all cursor-pointer active:scale-95 min-w-[32px] min-h-[32px]"
+                className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-surface border-2 border-border/80 rounded-full size-8 flex items-center justify-center shadow-lg z-100 text-secondary hover:text-tertiary hover:border-amber-400 hover:shadow-amber-200/50 transition-all cursor-pointer active:scale-95 min-w-[32px] min-h-[32px]"
                 title={isCollapsed ? "Mở rộng nhánh" : "Thu gọn nhánh"}
               >
                 {isCollapsed ? (
@@ -327,7 +327,7 @@ export default function FamilyTree({
 
       <div
         ref={containerRef}
-        className={`w-full h-full overflow-auto bg-stone-50 ${isPressed ? "cursor-grabbing" : "cursor-grab"}`}
+        className={`w-full h-full overflow-auto bg-neutral ${isPressed ? "cursor-grabbing" : "cursor-grab"}`}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUpOrLeave}
@@ -359,12 +359,12 @@ export default function FamilyTree({
         .css-tree li::before, .css-tree li::after {
           content: '';
           position: absolute; top: 0; right: 50%;
-          border-top: 2px solid #d6d3d1;
+          border-top: 2px solid var(--color-border);
           width: 50%; height: 30px;
         }
         .css-tree li::after {
           right: auto; left: 50%;
-          border-left: 2px solid #d6d3d1;
+          border-left: 2px solid var(--color-border);
         }
 
         /* Remove left-right connectors from elements without siblings */
@@ -376,7 +376,7 @@ export default function FamilyTree({
           position: absolute;
           top: 0;
           left: 50%;
-          border-left: 2px solid #d6d3d1;
+          border-left: 2px solid var(--color-border);
           width: 0;
           height: 30px;
         }
@@ -396,7 +396,7 @@ export default function FamilyTree({
 
         /* Add back the vertical connector to the last nodes */
         .css-tree li:last-child::before {
-          border-right: 2px solid #d6d3d1;
+          border-right: 2px solid var(--color-border);
           border-radius: 0 12px 0 0;
         }
         .css-tree li:first-child::after {
@@ -407,7 +407,7 @@ export default function FamilyTree({
         .css-tree ul ul::before {
           content: '';
           position: absolute; top: 0; left: 50%;
-          border-left: 2px solid #d6d3d1;
+          border-left: 2px solid var(--color-border);
           width: 0; height: 30px;
         }
       `,
