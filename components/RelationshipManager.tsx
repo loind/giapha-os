@@ -2,12 +2,14 @@
 
 import { MemberListContext, useMemberListView } from "@/context/MemberListContext";
 import { Person, RelationshipType } from "@/types";
+import { recomputeLineage } from "@/app/actions/lineage";
 import { formatDisplayDate } from "@/utils/dateHelpers";
 import { getAvatarBg } from "@/utils/styleHelprs";
 import { createClient } from "@/utils/supabase/client";
+import { CheckCircle2, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import DefaultAvatar from "./DefaultAvatar";
 
 interface RelationshipManagerProps {
@@ -102,6 +104,35 @@ export default function RelationshipManager({
   const [newSpouseName, setNewSpouseName] = useState("");
   const [newSpouseBirthYear, setNewSpouseBirthYear] = useState("");
   const [newSpouseNote, setNewSpouseNote] = useState("");
+
+  // Recompute Toast State
+  const [recomputeToast, setRecomputeToast] = useState<string | null>(null);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
+
+  const triggerRecompute = async () => {
+    try {
+      const result = await recomputeLineage();
+      if (result.success && result.updatedCount > 0) {
+        const msg = result.partialError
+          ? `Đã đồng bộ ${result.updatedCount} người (có lỗi một phần)`
+          : `Đã đồng bộ thế hệ cho ${result.updatedCount} người`;
+        // Clear any existing toast timer to prevent premature dismissal
+        if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+        setRecomputeToast(msg);
+        toastTimerRef.current = setTimeout(() => setRecomputeToast(null), 4000);
+      } else if (!result.success) {
+        console.error("recomputeLineage failed:", result.error);
+      }
+    } catch (err) {
+      console.error("triggerRecompute error:", err);
+    }
+  };
 
   // Fetch relationships
   const fetchRelationships = useCallback(async () => {
@@ -356,52 +387,12 @@ export default function RelationshipManager({
 
       if (error) throw error;
 
-      // Auto-update target person generation and is_in_law if currently missing
-      try {
-        const { data: targetPerson } = await supabase
-          .from("persons")
-          .select("generation, is_in_law")
-          .eq("id", selectedTargetId)
-          .single();
-
-        if (
-          targetPerson &&
-          (targetPerson.generation == null || targetPerson.is_in_law == null)
-        ) {
-          const updates: { generation?: number; is_in_law?: boolean } = {};
-
-          if (targetPerson.generation == null && person.generation != null) {
-            if (newRelDirection === "child")
-              updates.generation = person.generation + 1;
-            else if (newRelDirection === "parent")
-              updates.generation = person.generation - 1;
-            else if (newRelDirection === "spouse")
-              updates.generation = person.generation;
-          }
-
-          if (targetPerson.is_in_law == null) {
-            if (newRelDirection === "child" || newRelDirection === "parent")
-              updates.is_in_law = false;
-            else if (newRelDirection === "spouse")
-              updates.is_in_law = person.is_in_law === true ? false : true;
-          }
-
-          if (Object.keys(updates).length > 0) {
-            await supabase
-              .from("persons")
-              .update(updates)
-              .eq("id", selectedTargetId);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to auto-update target person properties", err);
-      }
-
       setIsAdding(false);
       setSearchTerm("");
       setSelectedTargetId(null);
       setNewRelNote("");
-      fetchRelationships();
+      await fetchRelationships();
+      await triggerRecompute();
       router.refresh();
     } catch (err: unknown) {
       const e = err as Error;
@@ -500,14 +491,16 @@ export default function RelationshipManager({
           },
         ]);
         setSelectedSpouseId("");
-        fetchRelationships();
+        await fetchRelationships();
+        await triggerRecompute();
         router.refresh();
       } else {
         setError(
           `Đã xảy ra lỗi. Chỉ lưu thành công ${successCount}/${validChildren.length} người.`,
         );
         setTimeout(() => setError(null), 5000);
-        fetchRelationships();
+        await fetchRelationships();
+        await triggerRecompute();
         router.refresh();
       }
     } catch (err: unknown) {
@@ -584,7 +577,8 @@ export default function RelationshipManager({
       setNewSpouseName("");
       setNewSpouseBirthYear("");
       setNewSpouseNote("");
-      fetchRelationships();
+      await fetchRelationships();
+      await triggerRecompute();
       router.refresh();
     } catch (err: unknown) {
       const e = err as Error;
@@ -603,7 +597,8 @@ export default function RelationshipManager({
         .delete()
         .eq("id", relId);
       if (error) throw error;
-      fetchRelationships();
+      await fetchRelationships();
+      await triggerRecompute();
       router.refresh();
     } catch (err: unknown) {
       const e = err as Error;
@@ -633,6 +628,20 @@ export default function RelationshipManager({
 
   return (
     <div className="space-y-6">
+      {/* Recompute Toast */}
+      {recomputeToast && (
+        <div className="fixed top-4 right-4 z-50 bg-emerald-600 text-white px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium animate-in fade-in slide-in-from-top-2 flex items-center gap-2">
+          <CheckCircle2 className="size-4 shrink-0" />
+          {recomputeToast}
+          <button
+            onClick={() => setRecomputeToast(null)}
+            className="text-white/70 hover:text-white ml-2"
+          >
+            <X className="size-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* List Sections */}
       {["parent", "spouse", "child", "child_in_law"].map((group) => {
         const items = groupByType(group);

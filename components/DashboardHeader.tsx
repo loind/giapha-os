@@ -2,6 +2,7 @@
 
 import config from "@/app/config";
 import HeaderMenu from "@/components/HeaderMenu";
+import ThemeToggle from "@/components/ThemeToggle";
 import {
   Home,
   Network,
@@ -100,6 +101,7 @@ export default function DashboardHeader({
                   )}
                 </button>
               )}
+              <ThemeToggle />
               <HeaderMenu />
             </div>
           </div>
@@ -110,6 +112,10 @@ export default function DashboardHeader({
       {showNav && mobileMenuOpen && (
         <div className="lg:hidden bg-surface border-b border-border shadow-lg">
           <nav className="max-w-7xl mx-auto px-4 py-4 space-y-1">
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-stone-100">
+              <span className="text-sm font-medium text-stone-700">Theme</span>
+              <ThemeToggle />
+            </div>
             {mainNavItems.map((item) => {
               const Icon = item.icon;
               return (

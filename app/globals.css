@@ -31,6 +31,22 @@
   --shadow-soft-hover: 0 20px 40px rgb(0 0 0 / 0.08);
 }
 
+/* Dark Mode - Warm Heritage Palette */
+.dark {
+  --color-background: var(--color-neutral);
+  --color-foreground: var(--color-primary);
+  --color-primary: #EDE4D5;
+  --color-secondary: #A8A29E;
+  --color-tertiary: #D4A017;
+  --color-neutral: #1A1814;
+  --color-surface: #2C2520;
+  --color-border: #3D3833;
+  --color-error: #dc2626;
+
+  --shadow-soft: 0 8px 30px rgb(0 0 0 / 0.3);
+  --shadow-soft-hover: 0 20px 40px rgb(0 0 0 / 0.4);
+}
+
 body {
   background: var(
     --color-neutral
