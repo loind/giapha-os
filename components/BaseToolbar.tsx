@@ -140,7 +140,7 @@ export default function BaseToolbar({
                   <input
                     type="number"
                     min={0}
-                    max={99}
+                    max={100}
                     value={autoCollapseLevel ?? 0}
                     onChange={(e) => {
                       const val = parseInt(e.target.value, 10);
