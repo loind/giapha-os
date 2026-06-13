@@ -33,7 +33,7 @@ export default function FamilyNodeCard({
       onClick={onClickCard}
       className={`
         group py-2 px-1 flex flex-col items-center justify-start transition-all duration-300 hover:-translate-y-1 rounded-3xl relative h-full
-        ${isDeceased ? "grayscale-[0.4] opacity-80" : ""}
+        ${isDeceased ? "opacity-80" : ""}
         ${showAvatar ? "w-20 sm:w-24 md:w-28 bg-surface/70 backdrop-blur-xl hover:shadow-soft-hover" : "px-3"}
       `}
     >
@@ -64,7 +64,7 @@ export default function FamilyNodeCard({
           <div
             className={`
               h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-full flex items-center justify-center text-[10px] sm:text-xs md:text-sm text-white overflow-hidden shrink-0 shadow-lg ring-2 ring-white transition-transform duration-300 group-hover:scale-105
-              ${getAvatarBg(person.gender)}
+              ${getAvatarBg(person.gender)} ${isDeceased ? "grayscale" : ""}
             `}
           >
             {person.avatar_url ? (

@@ -151,6 +151,15 @@ export default function BubbleMapTree({
         .attr("cx", 0)
         .attr("cy", 0);
 
+      // Grayscale filter for deceased persons
+      const grayscaleFilter = defs
+        .append("filter")
+        .attr("id", "grayscale-filter");
+      grayscaleFilter
+        .append("feColorMatrix")
+        .attr("type", "saturate")
+        .attr("values", "0");
+
       // Zoom setup
       const zoom = d3
         .zoom<SVGSVGElement, unknown>()
@@ -268,6 +277,10 @@ export default function BubbleMapTree({
             const avatarGroup = unitContent
               .append("g")
               .attr("transform", `translate(${cx}, 0)`);
+
+            if (person.is_deceased) {
+              avatarGroup.style("filter", "url(#grayscale-filter)");
+            }
 
             avatarGroup
               .append("image")

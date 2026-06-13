@@ -26,7 +26,7 @@ export default function PersonCard({ person }: PersonCardProps) {
     <button
       onClick={() => setMemberModalId(person.id)}
       className={`group block relative bg-white/60 p-2 sm:p-4 rounded-3xl shadow-soft border border-border hover:border-tertiary hover:-translate-y-1 hover:shadow-soft-hover hover:bg-surface/90 transition-all duration-300 overflow-hidden
-        ${isDeceased ? "opacity-80 grayscalePer-[0.3]" : ""}`}
+        ${isDeceased ? "opacity-80" : ""}`}
     >
       {/* Decorative gradient blob */}
       {/* <div
@@ -37,7 +37,7 @@ export default function PersonCard({ person }: PersonCardProps) {
         <div className="relative">
           <div
             className={`size-14 sm:size-16 rounded-full flex items-center justify-center text-xl font-bold text-white overflow-hidden shrink-0 shadow-lg ring-2 ring-white transition-transform duration-300 group-hover:scale-105
-            ${getAvatarBg(person.gender)}`}
+            ${getAvatarBg(person.gender)} ${isDeceased ? "grayscale" : ""}`}
           >
             {person.avatar_url ? (
               <Image
