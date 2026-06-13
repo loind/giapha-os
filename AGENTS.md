@@ -46,3 +46,34 @@ This project is indexed by GitNexus as **giapha-os** (1029 symbols, 1851 relatio
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
 
 <!-- gitnexus:end -->
+
+## Code Intelligence — GitNexus First
+
+This project is indexed by GitNexus. **ALWAYS use GitNexus MCP tools BEFORE grep or manual code reading.**
+
+### Mandatory Workflow
+
+| Step | Khi nào | Tool |
+|------|---------|------|
+| 1. Impact check | Trước khi sửa BẤT KỲ symbol | `impact({target, direction: "upstream"})` |
+| 2. Understand | Khi cần biết code hoạt động thế nào | `query({query: "concept"})` |
+| 3. Deep dive | Khi cần chi tiết callers/callees | `context({name: "symbol"})` |
+| 4. Structural query | Khi cần pattern/architecture view | `cypher()` |
+| 5. Verify | Trước khi commit | `detect_changes()` |
+
+### Critical Hubs (KHÔNG được sửa mà không impact check)
+
+| Symbol | Risk | Dependents |
+|--------|------|------------|
+| `createClient` (server, `utils/supabase/server.ts`) | 🔴 CRITICAL | 33 symbols, 22 processes |
+| `recomputeLineage` (`app/actions/lineage.ts`) | 🟠 HIGH | 6 symbols, 4 processes |
+| `createClient` (browser, `utils/supabase/client.ts`) | 🟡 MEDIUM | 12 symbols |
+| `Person` interface (`types/index.ts`) | 🟡 MEDIUM | 27 files import |
+
+### Architecture Facts
+
+- **No REST API** — Server Actions + direct Supabase calls only
+- **Dual Supabase client:** `client.ts` (browser) / `server.ts` (server)
+- **4 relationship ops share same 7-step pattern:** handleAddRelationship, handleBulkAdd, handleQuickAddSpouse, handleDelete → all call recomputeLineage
+- **Longest flow:** DataImportExport → CreateClient (8 steps, cross-community)
+- **MemberForm is a leaf** — rendered by Next.js routing, not imported (graph won't show upstream callers)
