@@ -1,7 +1,6 @@
 "use server";
 
 import {
-  computeBirthOrders,
   computeGenerations,
   computeInLaws,
 } from "@/utils/lineage";
@@ -22,10 +21,12 @@ interface RecomputeFailure {
 type RecomputeResult = RecomputeSuccess | RecomputeFailure;
 
 /**
- * Recompute generation, birth_order, and is_in_law for all persons.
+ * Recompute generation and is_in_law for all persons.
  *
  * Fetches all persons + relationships, runs compute functions,
  * diffs against current DB values, and batch-updates changed records.
+ *
+ * Note: birth_order is NOT auto-computed — managed manually by user.
  *
  * Called automatically after relationship mutations in RelationshipManager.
  */
@@ -45,7 +46,7 @@ export async function recomputeLineage(): Promise<RecomputeResult> {
     // Fetch all persons (only fields needed for compute + diff)
     const { data: persons, error: personsError } = await supabase
       .from("persons")
-      .select("id, full_name, generation, birth_order, is_in_law, gender, birth_year");
+      .select("id, full_name, generation, is_in_law, gender, birth_year");
 
     if (personsError) {
       console.error("recomputeLineage: fetch persons error:", personsError);
@@ -66,33 +67,28 @@ export async function recomputeLineage(): Promise<RecomputeResult> {
       return { success: true, updatedCount: 0 };
     }
 
-    // Compute lineage values
+    // Compute lineage values (skip birth_order — managed manually by user)
     const genMap = computeGenerations(persons, relationships ?? []);
-    const orderMap = computeBirthOrders(persons, relationships ?? []);
     const inLawMap = computeInLaws(persons, relationships ?? []);
 
     // Diff: find persons whose values changed
     const updatePayloads: Array<{
       id: string;
       generation: number | null;
-      birth_order: number | null;
       is_in_law: boolean;
     }> = [];
 
     for (const p of persons) {
       const newGen = genMap.has(p.id) ? genMap.get(p.id)! : null;
-      const newOrder = orderMap.has(p.id) ? orderMap.get(p.id)! : null;
       const newInLaw = inLawMap.get(p.id) ?? false;
 
       const genChanged = newGen !== p.generation;
-      const orderChanged = newOrder !== p.birth_order;
       const inLawChanged = newInLaw !== p.is_in_law;
 
-      if (genChanged || orderChanged || inLawChanged) {
+      if (genChanged || inLawChanged) {
         updatePayloads.push({
           id: p.id,
           generation: newGen,
-          birth_order: newOrder,
           is_in_law: newInLaw,
         });
       }
@@ -113,7 +109,6 @@ export async function recomputeLineage(): Promise<RecomputeResult> {
             .from("persons")
             .update({
               generation: u.generation,
-              birth_order: u.birth_order,
               is_in_law: u.is_in_law,
             })
             .eq("id", u.id),
