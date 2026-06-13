@@ -46,3 +46,40 @@ User Action → Component ("use client")
 | LineageManager | computeGenerations/BirthOrders/InLaws (from utils/lineage) |
 | FamilyTree | D3, Person/Relationship types |
 | MemberList | MemberListContext, supabase queries |
+
+## GitNexus Intelligence Layer
+
+Project indexed by GitNexus (1029 symbols, 1851 relationships, 60 execution flows).
+**GitNexus MCP tools are the PRIMARY code intelligence layer — use BEFORE grep/manual reading.**
+
+### Tool Priority
+
+1. **GitNexus MCP** — impact, query, context, cypher, rename, detect_changes
+2. **docs/context/** (this file) — static architecture reference
+3. **Targeted grep** — fallback khi GitNexus không cover (config files, raw strings)
+
+### Khi nào dùng gì
+
+| Câu hỏi | GitNexus Tool |
+|---------|---------------|
+| "Sửa function X ảnh hưởng gì?" | `impact({target: "X", direction: "upstream"})` |
+| "Feature Y hoạt động thế nào?" | `query({query: "Y concept"})` → trả về execution flows |
+| "Chi tiết symbol Z?" | `context({name: "Z"})` → callers, callees, processes |
+| "Cấu trúc communities?" | `cypher()` → structural analysis |
+| "Rename symbol an toàn?" | `rename({symbol_name, new_name, dry_run: true})` |
+| "Changes có đúng scope?" | `detect_changes()` |
+
+### Critical Hubs — cần impact check trước khi sửa
+
+| Symbol | Risk | Blast Radius |
+|--------|------|-------------|
+| `createClient` (server) | CRITICAL | 33 dependents, 22 processes — toàn app |
+| `recomputeLineage` | HIGH | 6 dependents, 4 processes — relationship ops |
+| `Person` interface | MEDIUM | 27 files import — core data model |
+| `createClient` (browser) | MEDIUM | 12 dependents — client-side Supabase |
+
+### Execution Flow Patterns
+
+- **4 relationship operations** (addRel, bulkAdd, quickAddSpouse, delete) share identical 7-step cross-community flow → thay đổi 1 bước impact cả 4
+- **DataImportExport** flow dài nhất (8 steps) — cross-community từ Components → Actions → Supabase
+- Tất cả mutation flows kết thúc ở `createClient` (server) → đây là single point of failure
