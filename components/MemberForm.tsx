@@ -431,18 +431,18 @@ export default function MemberForm({
   };
 
   const inputClasses =
-    "bg-white text-stone-900 placeholder-stone-500 block w-full rounded-xl border border-stone-300 shadow-sm focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:bg-white text-sm px-4 py-3 transition-all outline-none!";
+    "bg-white text-stone-900 placeholder-stone-500 block w-full rounded-xl border border-stone-300 shadow-sm focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:bg-white text-sm px-3 py-2.5 transition-all outline-none!";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
       <motion.div
         variants={formSectionVariants}
         initial="hidden"
         animate="show"
-        className="bg-white/80 p-5 sm:p-8 rounded-2xl shadow-sm border border-stone-200/80"
+        className="bg-white/80 p-4 sm:p-6 rounded-2xl shadow-sm border border-stone-200/80"
       >
         {/* Section Header with Icon */}
-        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-stone-100">
+        <div className="flex items-center gap-3 mb-4 pb-3 border-b border-stone-100">
           <div className="p-2 bg-amber-50 rounded-xl border border-amber-100">
             <User className="size-5 text-amber-600" />
           </div>
@@ -455,9 +455,9 @@ export default function MemberForm({
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-1">
-            <label className="block text-sm font-semibold text-stone-700 mb-1.5">
+            <label className="block text-sm font-semibold text-stone-700 mb-1">
               Họ và Tên <span className="text-red-500">*</span>
             </label>
             <input
@@ -471,7 +471,7 @@ export default function MemberForm({
           </div>
 
           <div className="md:col-span-1">
-            <label className="block text-sm font-semibold text-stone-700 mb-1.5">
+            <label className="block text-sm font-semibold text-stone-700 mb-1">
               Tên gọi khác
             </label>
             <input
@@ -484,7 +484,7 @@ export default function MemberForm({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-stone-700 mb-1.5">
+            <label className="block text-sm font-semibold text-stone-700 mb-1">
               Giới tính <span className="text-red-500">*</span>
             </label>
             <div className="relative">
@@ -503,7 +503,7 @@ export default function MemberForm({
             </div>
           </div>
 
-          <div className="flex items-center sm:mt-7 mt-2">
+          <div className="flex items-center sm:mt-5 mt-1">
             <label className="flex items-center gap-3 group">
               <div className="relative flex items-center">
                 <input
@@ -540,50 +540,66 @@ export default function MemberForm({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-stone-700 mb-1.5">
+            <label className="block text-sm font-semibold text-stone-700 mb-1">
               Thứ tự sinh trong gia đình
             </label>
-            <input
-              type="number"
-              min="1"
-              placeholder="Ví dụ: 1 (con trưởng), 2 (con thứ hai)..."
-              value={birthOrder}
-              onChange={(e) =>
-                setBirthOrder(e.target.value ? Number(e.target.value) : "")
-              }
-              className={inputClasses}
-            />
-            <p className="mt-1.5 text-xs text-stone-400 flex items-center gap-1">
-              <span>💡</span> Để trống nếu không rõ
-            </p>
+            <div className="relative">
+              <select
+                value={birthOrder}
+                onChange={(e) =>
+                  setBirthOrder(e.target.value ? Number(e.target.value) : "")
+                }
+                className={`${inputClasses} appearance-none`}
+              >
+                <option value="">— Để trống nếu không rõ —</option>
+                {Array.from({ length: 15 }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={n}>
+                    {n === 1
+                      ? "1 — Con trưởng"
+                      : n === 2
+                        ? "2 — Con thứ hai"
+                        : `${n}`}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-stone-500">
+                <Settings2 className="size-4" />
+              </div>
+            </div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-stone-700 mb-1.5">
+            <label className="block text-sm font-semibold text-stone-700 mb-1">
               Thuộc đời thứ
             </label>
-            <input
-              type="number"
-              min="1"
-              placeholder="Ví dụ: 1, 2, 3..."
-              value={generation}
-              onChange={(e) =>
-                setGeneration(e.target.value ? Number(e.target.value) : "")
-              }
-              className={inputClasses}
-            />
-            <p className="mt-1.5 text-xs text-stone-400 flex items-center gap-1">
-              <span>💡</span> Để trống nếu không rõ
-            </p>
+            <div className="relative">
+              <select
+                value={generation}
+                onChange={(e) =>
+                  setGeneration(e.target.value ? Number(e.target.value) : "")
+                }
+                className={`${inputClasses} appearance-none`}
+              >
+                <option value="">— Để trống nếu không rõ —</option>
+                {Array.from({ length: 20 }, (_, i) => i + 1).map((n) => (
+                  <option key={n} value={n}>
+                    Đời thứ {n}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-stone-500">
+                <Settings2 className="size-4" />
+              </div>
+            </div>
           </div>
 
-          <div className="md:col-span-2 mt-2">
-            <label className="block text-sm font-semibold text-stone-700 mb-2.5">
+          <div className="md:col-span-2 mt-1">
+            <label className="block text-sm font-semibold text-stone-700 mb-1">
               Ảnh đại diện
             </label>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 bg-stone-50/50 p-4 rounded-xl border border-stone-100">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-stone-50/50 p-3 rounded-xl border border-stone-100">
               <div
-                className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full flex items-center justify-center text-xl font-bold text-white overflow-hidden shrink-0 shadow-md border-4 border-white
+                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-xl font-bold text-white overflow-hidden shrink-0 shadow-md border-4 border-white
                   ${!avatarPreview ? (gender === "male" ? "bg-linear-to-br from-sky-400 to-sky-700" : gender === "female" ? "bg-linear-to-br from-rose-400 to-rose-700" : "bg-linear-to-br from-stone-400 to-stone-600") : ""}`}
               >
                 {avatarPreview ? (
@@ -676,10 +692,10 @@ export default function MemberForm({
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-semibold text-stone-700 mb-1.5">
+            <label className="block text-sm font-semibold text-stone-700 mb-1">
               Ngày sinh <span className="text-stone-400 font-normal">(Dương lịch)</span>
             </label>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <input
                 type="number"
                 placeholder="Ngày"
@@ -719,7 +735,7 @@ export default function MemberForm({
             </p>
           </div>
 
-          <div className="md:col-span-2 bg-stone-50/50 p-5 rounded-2xl border border-stone-200/60 shadow-xs">
+          <div className="md:col-span-2 bg-stone-50/50 p-4 rounded-2xl border border-stone-200/60 shadow-xs">
             <label className="flex items-center gap-3 group cursor-pointer">
               <div className="relative flex items-center">
                 <input
@@ -772,14 +788,14 @@ export default function MemberForm({
                   exit={{ opacity: 0, height: 0, marginTop: 0 }}
                   className="overflow-hidden"
                 >
-                  <p className="text-[11px] text-stone-500 mb-4 italic">
+                  <p className="text-[11px] text-stone-500 mb-2 italic">
                     * Nhập một trong hai loại lịch, hệ thống sẽ tự động tính toán phần còn lại.
                   </p>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {/* Lunar Date */}
-                    <div className="bg-white/60 p-3 rounded-xl border border-stone-200/50">
-                      <label className="block text-xs font-semibold text-stone-600 mb-2">
+                    <div className="bg-white/60 p-2.5 rounded-xl border border-stone-200/50">
+                      <label className="block text-xs font-semibold text-stone-600 mb-1.5">
                         Ngày mất <span className="text-amber-600 font-bold">Âm lịch</span>
                       </label>
                       <div className="flex items-center gap-1.5">
@@ -820,8 +836,8 @@ export default function MemberForm({
                     </div>
 
                     {/* Solar Date */}
-                    <div className="bg-white/60 p-3 rounded-xl border border-stone-200/50">
-                      <label className="block text-xs font-semibold text-stone-600 mb-2">
+                    <div className="bg-white/60 p-2.5 rounded-xl border border-stone-200/50">
+                      <label className="block text-xs font-semibold text-stone-600 mb-1.5">
                         Ngày mất <span className="text-sky-600 font-bold">Dương lịch</span>
                       </label>
                       <div className="flex items-center gap-1.5">
@@ -867,7 +883,7 @@ export default function MemberForm({
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-semibold text-stone-700 mb-1.5">
+            <label className="block text-sm font-semibold text-stone-700 mb-1">
               Ghi chú
             </label>
             <textarea
@@ -888,12 +904,12 @@ export default function MemberForm({
           initial="hidden"
           animate="show"
           transition={{ delay: 0.1 }}
-          className="bg-linear-to-br from-amber-50/80 to-stone-50/80 p-5 sm:p-8 rounded-2xl border border-amber-200/50 shadow-sm relative overflow-hidden"
+          className="bg-linear-to-br from-amber-50/80 to-stone-50/80 p-4 sm:p-6 rounded-2xl border border-amber-200/50 shadow-sm relative overflow-hidden"
         >
           {/* Decorative Background Icon */}
           <Lock className="absolute -right-6 -bottom-6 w-32 h-32 text-amber-500/5 rotate-12" />
 
-          <h3 className="text-lg sm:text-xl font-serif font-bold text-amber-900 mb-6 border-b border-amber-200/50 pb-4 flex items-center gap-2 relative z-10">
+          <h3 className="text-lg sm:text-xl font-serif font-bold text-amber-900 mb-4 border-b border-amber-200/50 pb-3 flex items-center gap-2 relative z-10">
             <span className="p-1.5 bg-amber-100/80 text-amber-700 rounded-lg shadow-xs">
               <Lock className="size-4" />
             </span>
@@ -902,9 +918,9 @@ export default function MemberForm({
               Chỉ Admin
             </span>
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
             <div>
-              <label className="flex items-center gap-1.5 text-sm font-semibold text-amber-900/80 mb-1.5">
+              <label className="flex items-center gap-1.5 text-sm font-semibold text-amber-900/80 mb-1">
                 <Phone className="size-4" /> Số điện thoại
               </label>
               <input
@@ -924,7 +940,7 @@ export default function MemberForm({
             </div>
 
             <div>
-              <label className="flex items-center gap-1.5 text-sm font-semibold text-amber-900/80 mb-1.5">
+              <label className="flex items-center gap-1.5 text-sm font-semibold text-amber-900/80 mb-1">
                 <Briefcase className="size-4" /> Nghề nghiệp
               </label>
               <input
@@ -937,7 +953,7 @@ export default function MemberForm({
             </div>
 
             <div className="md:col-span-2">
-              <label className="flex items-center gap-1.5 text-sm font-semibold text-amber-900/80 mb-1.5">
+              <label className="flex items-center gap-1.5 text-sm font-semibold text-amber-900/80 mb-1">
                 <MapPin className="size-4" /> Nơi ở hiện tại
               </label>
               <input
@@ -971,7 +987,7 @@ export default function MemberForm({
         initial="hidden"
         animate="show"
         transition={{ delay: 0.2 }}
-        className="flex justify-end gap-3 sm:gap-4 pt-6"
+        className="flex justify-end gap-2 sm:gap-3 pt-4"
       >
         <button
           type="button"
