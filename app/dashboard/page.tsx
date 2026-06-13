@@ -1,6 +1,7 @@
 import { getTodayLunar } from "@/utils/dateHelpers";
 import { computeEvents } from "@/utils/eventHelpers";
 import { getIsAdmin, getSupabase } from "@/utils/supabase/queries";
+import WelcomeBanner from "@/components/WelcomeBanner";
 import {
   ArrowRight,
   BarChart2,
@@ -150,10 +151,12 @@ export default async function DashboardLaunchpad() {
   ];
 
   return (
-    <main className="flex-1 flex flex-col p-4 sm:p-8 max-w-7xl mx-auto w-full">
-      {/* <div className="mb-8 sm:mb-12 text-center sm:text-left">
-        <h1 className="title">Bảng điều khiển</h1>
-      </div> */}
+    <main id="main-content" className="flex-1 flex flex-col p-4 sm:p-8 max-w-7xl mx-auto w-full">
+      {/* Welcome Banner */}
+      <WelcomeBanner
+        totalMembers={persons?.length ?? 0}
+        upcomingEventsCount={upcomingEvents.length}
+      />
 
       {/* ── Today's Date & Upcoming Events ─────────────────── */}
       <Link

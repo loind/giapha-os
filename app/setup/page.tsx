@@ -87,14 +87,19 @@ export default async function SetupPage() {
               </div>
             </div>
 
-            <div className="col-span-1 border border-stone-200 rounded-2xl overflow-hidden bg-[#1e1e1e] flex flex-col h-[400px]">
-              <div className="bg-[#2d2d2d] px-4 py-2 flex items-center justify-between border-b border-stone-800">
-                <span className="text-stone-400 text-xs font-mono">
+            <div className="col-span-1 border border-stone-200 rounded-2xl overflow-hidden bg-stone-800 flex flex-col h-[400px] sm:h-[450px]">
+              <div className="bg-stone-700 px-4 py-2.5 flex items-center justify-between border-b border-stone-600">
+                <span className="text-stone-300 text-xs font-mono">
                   docs/schema.sql
                 </span>
+                <div className="flex gap-1.5">
+                  <div className="size-2.5 rounded-full bg-red-400/60" />
+                  <div className="size-2.5 rounded-full bg-yellow-400/60" />
+                  <div className="size-2.5 rounded-full bg-green-400/60" />
+                </div>
               </div>
               <div className="p-4 overflow-y-auto w-full flex-grow custom-scrollbar">
-                <pre className="text-xs sm:text-sm font-mono text-stone-300 leading-relaxed whitespace-pre">
+                <pre className="text-xs sm:text-sm font-mono text-stone-200 leading-relaxed whitespace-pre">
                   <code>{schemaContent}</code>
                 </pre>
               </div>

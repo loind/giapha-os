@@ -1,5 +1,9 @@
 import Footer from "@/components/Footer";
+import LandingHeader from "@/components/LandingHeader";
 import LandingHero from "@/components/LandingHero";
+import LandingPreview from "@/components/LandingPreview";
+import LandingFeatures from "@/components/LandingFeatures";
+import LandingCTA from "@/components/LandingCTA";
 import config from "./config";
 
 export default function HomePage() {
@@ -14,8 +18,26 @@ export default function HomePage() {
         <div className="absolute top-[20%] left-[-10%] w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-rose-200/20 rounded-full blur-[120px] mix-blend-multiply" />
       </div>
 
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-20 md:py-32 relative z-10 w-full">
-        <LandingHero siteName={config.siteName} />
+      {/* Sticky Header */}
+      <LandingHeader />
+
+      {/* Main Content */}
+      <main id="main-content" className="flex-1 flex flex-col relative z-10">
+        {/* Hero Section */}
+        <section className="flex flex-col items-center justify-center px-4 pt-16 pb-12 md:pt-24 md:pb-16">
+          <LandingHero siteName={config.siteName} />
+        </section>
+
+        {/* Product Preview Section */}
+        <section className="py-12 sm:py-16">
+          <LandingPreview />
+        </section>
+
+        {/* Features Section */}
+        <LandingFeatures />
+
+        {/* CTA Section */}
+        <LandingCTA />
       </main>
 
       <Footer className="bg-transparent relative z-10 border-none" />

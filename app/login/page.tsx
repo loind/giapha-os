@@ -2,10 +2,13 @@
 
 import config from "@/app/config";
 import Footer from "@/components/Footer";
+import ThemeToggle from "@/components/ThemeToggle";
 import { createClient } from "@/utils/supabase/client";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
+  Eye,
+  EyeOff,
   Info,
   KeyRound,
   Mail,
@@ -40,6 +43,42 @@ export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+  }>({});
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
+
+  const validateField = (field: string, value: string) => {
+    const errors: typeof fieldErrors = { ...fieldErrors };
+    switch (field) {
+      case "email":
+        if (!value) errors.email = "Email là bắt buộc";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+          errors.email = "Email không hợp lệ";
+        else delete errors.email;
+        break;
+      case "password":
+        if (!value) errors.password = "Mật khẩu là bắt buộc";
+        else if (value.length < 6)
+          errors.password = "Mật khẩu ít nhất 6 ký tự";
+        else delete errors.password;
+        break;
+      case "confirmPassword":
+        if (!isLogin && value !== password)
+          errors.confirmPassword = "Mật khẩu xác nhận không khớp";
+        else delete errors.confirmPassword;
+        break;
+    }
+    setFieldErrors(errors);
+  };
+
+  const handleBlur = (field: string, value: string) => {
+    setTouchedFields((prev) => new Set(prev).add(field));
+    validateField(field, value);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -187,12 +226,18 @@ export default function LoginPage() {
                     type="email"
                     autoComplete="email"
                     required
-                    className="bg-white/50 text-stone-900 placeholder-stone-400 block w-full rounded-xl border border-stone-200/80 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] focus:border-amber-400 focus:ring-amber-400 focus:bg-white pl-11 pr-4 py-3.5 transition-all duration-200 outline-none"
+                    className={`bg-white/50 text-stone-900 placeholder-stone-400 block w-full rounded-xl border ${fieldErrors.email && touchedFields.has("email") ? "border-red-300 focus:border-red-400 focus:ring-red-400" : "border-stone-200/80 focus:border-amber-400 focus:ring-amber-400"} shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] focus:bg-white pl-11 pr-4 py-3.5 transition-all duration-200 outline-none`}
                     placeholder="name@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    onBlur={() => handleBlur("email", email)}
                   />
                 </div>
+                {fieldErrors.email && touchedFields.has("email") && (
+                  <p className="mt-1.5 text-xs text-red-600 dark:text-red-400 font-medium ml-1" role="alert">
+                    {fieldErrors.email}
+                  </p>
+                )}
               </div>
 
               <div className="relative">
@@ -207,16 +252,42 @@ export default function LoginPage() {
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     autoComplete={isLogin ? "current-password" : "new-password"}
                     required
-                    className="bg-white/50 text-stone-900 placeholder-stone-400 block w-full rounded-xl border border-stone-200/80 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] focus:border-amber-400 focus:ring-amber-400 focus:bg-white pl-11 pr-4 py-3.5 transition-all duration-200 outline-none"
+                    className={`bg-white/50 text-stone-900 placeholder-stone-400 block w-full rounded-xl border ${fieldErrors.password && touchedFields.has("password") ? "border-red-300 focus:border-red-400 focus:ring-red-400" : "border-stone-200/80 focus:border-amber-400 focus:ring-amber-400"} shadow-[0_2px_10px_-3px_rgba(0,0,0,0.05)] focus:bg-white pl-11 pr-12 py-3.5 transition-all duration-200 outline-none`}
                     placeholder="Nhập mật khẩu"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onBlur={() => handleBlur("password", password)}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 p-1 text-stone-400 hover:text-stone-600 transition-colors min-h-[32px] min-w-[32px] flex items-center justify-center rounded"
+                    aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  </button>
                 </div>
+                {fieldErrors.password && touchedFields.has("password") && (
+                  <p className="mt-1.5 text-xs text-red-600 dark:text-red-400 font-medium ml-1" role="alert">
+                    {fieldErrors.password}
+                  </p>
+                )}
               </div>
+
+              {isLogin && (
+                <div className="text-right -mt-2">
+                  <a
+                    href="mailto:giaphaos@homielab.com?subject=Quên mật khẩu"
+                    className="text-xs text-amber-700 hover:text-amber-600 font-medium transition-colors"
+                  >
+                    Quên mật khẩu?
+                  </a>
+                </div>
+              )}
 
               <AnimatePresence>
                 {!isLogin && (
@@ -280,7 +351,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full flex justify-center items-center gap-2 py-4 px-4 text-[15px] font-bold rounded-xl text-white bg-stone-900 hover:bg-stone-800 border border-stone-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-stone-900 disabled:opacity-70 disabled:cursor-wait transition-all duration-300 shadow-xl shadow-stone-900/10 hover:shadow-2xl hover:shadow-stone-900/20 hover:-translate-y-0.5"
+                className="group relative w-full flex justify-center items-center gap-2 py-4 px-4 text-[15px] font-bold rounded-xl text-white bg-amber-600 hover:bg-amber-700 border border-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-70 disabled:cursor-wait transition-all duration-300 shadow-xl shadow-amber-900/10 hover:shadow-2xl hover:shadow-amber-900/20 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
               >
                 {loading ? (
                   <span className="flex items-center gap-2.5">
@@ -353,13 +424,16 @@ export default function LoginPage() {
         Trang chủ
       </Link>
 
-      <Link
-        href="/about"
-        className="absolute top-6 right-6 z-20 flex items-center gap-2 text-stone-500 hover:text-stone-900 font-semibold text-sm transition-all duration-300 group bg-white/60 px-5 py-2.5 rounded-full shadow-sm border border-stone-200 hover:border-stone-300 hover:shadow-md"
-      >
-        <Info className="size-4 group-hover:scale-110 transition-transform" />
-        Giới thiệu
-      </Link>
+      <div className="absolute top-6 right-6 z-20 flex items-center gap-2">
+        <Link
+          href="/about"
+          className="flex items-center gap-2 text-stone-500 hover:text-stone-900 font-semibold text-sm transition-all duration-300 group bg-white/60 px-4 py-2.5 rounded-full shadow-sm border border-stone-200 hover:border-stone-300 hover:shadow-md min-h-[44px]"
+        >
+          <Info className="size-4 group-hover:scale-110 transition-transform" />
+          <span className="hidden sm:inline">Giới thiệu</span>
+        </Link>
+        <ThemeToggle />
+      </div>
 
       <Footer className="bg-transparent relative z-10 border-none mt-auto" />
     </div>

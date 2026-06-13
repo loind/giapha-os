@@ -2,10 +2,11 @@
 
 import { GalleryItem } from "@/types";
 import { useState } from "react";
-import { X, CalendarDays, Maximize2 } from "lucide-react";
+import { X, CalendarDays, Maximize2, ImageOff } from "lucide-react";
 import dayjs from "dayjs";
 
 import { createClient } from "@/utils/supabase/client";
+import { useToast } from "@/components/Toast";
 
 interface GalleryGridProps {
   items: GalleryItem[];
@@ -22,6 +23,7 @@ export default function GalleryGrid({
 }: GalleryGridProps) {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { toast } = useToast();
 
   const handleDelete = async (item: GalleryItem) => {
     if (!confirm("Bạn có chắc chắn muốn xóa hình ảnh này?")) return;
@@ -46,7 +48,7 @@ export default function GalleryGrid({
       if (onDeleteSuccess) onDeleteSuccess(item.id);
     } catch (err) {
       console.error("Error deleting gallery item", err);
-      alert("Đã xảy ra lỗi khi xóa hình ảnh.");
+      toast("error", "Đã xảy ra lỗi khi xóa hình ảnh.");
     } finally {
       setIsDeleting(false);
     }
@@ -54,14 +56,14 @@ export default function GalleryGrid({
 
   if (!items || items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-white rounded-3xl border border-stone-100 shadow-sm">
-        <div className="size-20 bg-stone-50 rounded-full flex items-center justify-center mb-4 border border-stone-100">
-          <Maximize2 className="size-8 text-stone-300" />
+      <div className="flex flex-col items-center justify-center py-20 px-4 text-center bg-white dark:bg-stone-800 rounded-3xl border border-stone-100 dark:border-stone-700 shadow-sm">
+        <div className="size-20 bg-amber-50 dark:bg-amber-900/20 rounded-full flex items-center justify-center mb-4 border border-amber-100 dark:border-amber-800">
+          <ImageOff className="size-8 text-amber-500 dark:text-amber-400" />
         </div>
-        <h3 className="text-xl font-bold text-stone-700 mb-2">
+        <h3 className="text-xl font-bold text-stone-700 dark:text-stone-300 mb-2">
           Chưa có hình ảnh nào
         </h3>
-        <p className="text-stone-500 max-w-sm">
+        <p className="text-stone-500 dark:text-stone-400 max-w-sm">
           Hãy là người đầu tiên thêm hình ảnh để lưu giữ những kỷ niệm đẹp của
           dòng họ.
         </p>
