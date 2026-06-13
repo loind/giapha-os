@@ -18,12 +18,12 @@ export default function Footer({
             hơn.
           </p>
         )}
-        <p className="flex items-center justify-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
+        <p className="flex flex-wrap items-center justify-center gap-2 opacity-80 hover:opacity-100 transition-opacity">
           <a
             href="https://github.com/homielab/giapha-os"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-stone-600 hover:text-amber-700 transition-colors inline-flex items-center gap-1.5"
+            className="font-semibold text-stone-600 hover:text-amber-700 transition-colors inline-flex items-center gap-1.5 min-h-[44px] py-2"
           >
             <svg
               viewBox="0 0 24 24"
@@ -39,12 +39,12 @@ export default function Footer({
             </svg>
             Gia Phả Nguyễn Danh - Xuân Đỉnh
           </a>
-          by
+          <span className="hidden sm:inline">by</span>
           <a
             href="https://homielab.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-green-600 hover:text-amber-700 transition-colors inline-flex items-center gap-1.5"
+            className="font-semibold text-green-600 hover:text-amber-700 transition-colors inline-flex items-center gap-1.5 min-h-[44px] py-2"
           >
             HomieLab
           </a>

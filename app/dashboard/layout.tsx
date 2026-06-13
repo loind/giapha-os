@@ -42,7 +42,7 @@ export default async function DashboardLayout({
             </div>
           </div>
         </header>
-        <main className="flex-1 flex flex-col items-center justify-center p-4">
+        <main id="main-content" className="flex-1 flex flex-col items-center justify-center p-4">
           <div className="max-w-md w-full text-center card-feature">
             <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg

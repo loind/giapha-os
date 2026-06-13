@@ -26,7 +26,8 @@ export default function LogoutButton() {
     <button
       onClick={handleLogout}
       disabled={isLoggingOut}
-      className="flex items-center gap-2 w-full px-4 py-2.5 text-sm font-medium text-stone-700 hover:text-rose-700 hover:bg-rose-50 transition-colors"
+      aria-label="Đăng xuất"
+      className="flex items-center gap-2 w-full px-4 py-3 text-sm font-medium text-stone-700 hover:text-rose-700 hover:bg-rose-50 transition-colors min-h-[44px]"
     >
       <LogOut className="size-4" />
       {isLoggingOut ? "Đang xử lý..." : "Đăng xuất"}

@@ -27,7 +27,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={handleClick}
-      className="p-2 text-stone-600 hover:text-stone-800 hover:bg-stone-100 rounded-lg transition-colors"
+      className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 text-stone-600 hover:text-stone-800 hover:bg-stone-100 rounded-lg transition-colors"
       aria-label={getLabel()}
       title={getLabel()}
     >
